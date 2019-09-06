@@ -40,6 +40,7 @@ DJANGO_APPS = [
 ESTABLISHED_APPS = [
     'rest_framework',
     'shops',
+    'users',
 ]
 INSTALLED_APPS = DJANGO_APPS + ESTABLISHED_APPS
 
@@ -52,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'users.middleware.AuthenticationMiddlewareJWT'
 ]
 
 ROOT_URLCONF = 'rest_api.urls'
@@ -127,3 +130,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}
+
+import datetime
+
+JWT_AUTH = {
+    'JWT_VERIFY': True,
+    'JWT_VERIFY_EXPIRATION': False,
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=6000),
+    # 'JWT_AUTH_HEADER_PREFIX': 'Bearer',
+}

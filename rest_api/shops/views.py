@@ -6,7 +6,7 @@ from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 
 from .serializers import ShopSerializer, StreetSerializer, CitySerializer
-from .models import Shop, Street, City
+from .models import Shop, City
 from .config import STREET, CITY, STATE_SHOP, SHOP_OPEN, SHOP_CLOSED
 
 
@@ -57,6 +57,7 @@ class ShopView(ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+
         return Response({'Message': f'You have successfully register shop, ID: {serializer.data["id"]}'})
 
 
