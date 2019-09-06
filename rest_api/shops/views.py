@@ -1,4 +1,4 @@
-from datetime import datetime
+from django.utils import timezone
 from django.db.models import Q, F
 
 from rest_framework.generics import ListAPIView, ListCreateAPIView
@@ -11,7 +11,7 @@ from .config import STREET, CITY, STATE_SHOP, SHOP_OPEN, SHOP_CLOSED
 
 
 def get_queryset_from_working_hours(state_shop, queryset):
-    now = datetime.now().time()
+    now = timezone.now()
 
     if state_shop == SHOP_OPEN:
         closes_before_midnight = queryset.filter(Q(opening_time__lt=F('closing_time')),
@@ -62,10 +62,7 @@ class ShopView(ListCreateAPIView):
 
 class StreetView(ListAPIView):
     serializer_class = StreetSerializer
-
-    def get_queryset(self):
-        city_id = self.kwargs['city_id']
-        return Street.objects.filter(city=city_id)
+    lookup_field = 'city_id'
 
 
 class CityView(ListAPIView):
