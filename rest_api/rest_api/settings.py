@@ -141,11 +141,9 @@ REST_FRAMEWORK = {
     ),
 }
 
-import datetime
 
 JWT_AUTH = {
     'JWT_VERIFY': True,
     'JWT_VERIFY_EXPIRATION': False,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=6000),
     # 'JWT_AUTH_HEADER_PREFIX': 'Bearer',
 }

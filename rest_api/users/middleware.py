@@ -13,6 +13,7 @@ class AuthenticationMiddlewareJWT(object):
         request.user = SimpleLazyObject(lambda: self.__class__.get_jwt_user(request))
         return self.get_response(request)
 
+    @staticmethod
     def get_jwt_user(request):
         if not request.user.is_authenticated:
             token = get_authorization_header(request).split()[1]
