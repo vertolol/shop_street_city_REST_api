@@ -1,9 +1,10 @@
-from rest_framework.generics import ListAPIView, CreateAPIView
+from rest_framework.views import APIView
+from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework_jwt.settings import api_settings
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from .serializers import UserSerializer
 
@@ -15,7 +16,7 @@ def get_token(user):
     payload = jwt_payload_handler(user)
     token = jwt_encode_handler(payload)
 
-    user_details = {}
+    user_details = dict()
     user_details['name'] = user.username
     user_details['token'] = token
 
@@ -36,16 +37,18 @@ class UserCreateView(CreateAPIView):
         return get_token(new_user)
 
 
-@api_view(['POST'])
-@permission_classes([AllowAny, ])
-def login(request):
-    username = request.data['username']
-    password = request.data['password']
+class LoginView(APIView):
+    permission_classes = (AllowAny,)
 
-    try:
-        user = User.objects.get(username=username, password=password)
-    except:
-        res = {'error': 'invalid username or password'}
-        return Response(res)
+    @staticmethod
+    def post(request):
+        username = request.data['username']
+        password = request.data['password']
 
-    return get_token(user)
+        try:
+            user = User.objects.get(username=username, password=password)
+        except ObjectDoesNotExist:
+            res = {'error': 'invalid username or password'}
+            return Response(res)
+
+        return get_token(user)
