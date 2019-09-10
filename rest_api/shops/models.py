@@ -1,8 +1,13 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
 
 
 class Shop(models.Model):
     name = models.CharField(max_length=256, db_index=True)
+    user = models.ForeignKey(User, related_name='shops', on_delete=models.CASCADE, null=True)
     city = models.ForeignKey('City', related_name='shops', on_delete=models.PROTECT)
     street = models.ForeignKey('Street', related_name='shops', on_delete=models.PROTECT)
     house = models.CharField(max_length=20)

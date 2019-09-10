@@ -5,8 +5,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework_jwt.settings import api_settings
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .serializers import UserSerializer
+
+
+User = get_user_model()
 
 
 def get_token(user):

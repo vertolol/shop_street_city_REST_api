@@ -4,6 +4,7 @@ from django.db.models import Q, F
 from rest_framework.generics import ListAPIView, ListCreateAPIView
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .serializers import ShopSerializer, StreetSerializer, CitySerializer
 from .models import Shop, City
@@ -32,6 +33,7 @@ def get_queryset_from_working_hours(state_shop, queryset):
 
 class ShopView(ListCreateAPIView):
     serializer_class = ShopSerializer
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def get_queryset(self):
         queryset = Shop.objects.all()

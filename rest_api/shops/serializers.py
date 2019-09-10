@@ -3,10 +3,20 @@ from .models import Shop, Street, City
 
 
 class ShopSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Shop
-        fields = ('id', 'name', 'city_name', 'city', 'street_name', 'street', 'house', 'opening_time', 'closing_time')
+        fields = ('id',
+                  'name',
+                  'user',
+                  'city_name',
+                  'city',
+                  'street_name',
+                  'street',
+                  'house',
+                  'opening_time',
+                  'closing_time')
         extra_kwargs = {
             'city': {'write_only': True},
             'street': {'write_only': True},
