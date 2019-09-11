@@ -1,14 +1,15 @@
 from django.utils import timezone
 from django.db.models import Q, F
 
-from rest_framework.generics import ListAPIView, ListCreateAPIView
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.exceptions import ParseError
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .serializers import ShopSerializer, StreetSerializer, CitySerializer
-from .models import Shop, City
+from .models import Shop, Street, City
 from .config import STREET, CITY, STATE_SHOP, SHOP_OPEN, SHOP_CLOSED
+from .permissions import IsOwnerOrReadOnly
 
 
 def get_queryset_from_working_hours(state_shop, queryset):
@@ -31,7 +32,7 @@ def get_queryset_from_working_hours(state_shop, queryset):
     return queryset
 
 
-class ShopView(ListCreateAPIView):
+class ShopListCreateView(ListCreateAPIView):
     serializer_class = ShopSerializer
     permission_classes = (IsAuthenticatedOrReadOnly, )
 
@@ -63,11 +64,19 @@ class ShopView(ListCreateAPIView):
         return Response({'Message': f'You have successfully register shop, ID: {serializer.data["id"]}'})
 
 
+class ShopDetailView(RetrieveUpdateDestroyAPIView):
+    serializer_class = ShopSerializer
+    queryset = Shop.objects.all()
+    renderer_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly, )
+
+
 class StreetView(ListAPIView):
     serializer_class = StreetSerializer
+    queryset = Street.objects.all()
     lookup_field = 'city_id'
 
 
 class CityView(ListAPIView):
-    queryset = City.objects.all()
     serializer_class = CitySerializer
+    queryset = City.objects.all()
+
