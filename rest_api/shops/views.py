@@ -67,7 +67,7 @@ class ShopListCreateView(ListCreateAPIView):
 class ShopDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = ShopSerializer
     queryset = Shop.objects.all()
-    renderer_classes = (IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly, )
+    permission_classes = (IsOwnerOrReadOnly,)
 
 
 class StreetView(ListAPIView):
