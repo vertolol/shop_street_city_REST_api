@@ -12,7 +12,7 @@ from .serializers import UserSerializer
 User = get_user_model()
 
 
-def get_token(user):
+def get_token(user: User) -> dict:
     jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
     jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
@@ -23,7 +23,7 @@ def get_token(user):
     user_details['name'] = user.username
     user_details['token'] = token
 
-    return Response(user_details)
+    return user_details
 
 
 class UserCreateView(CreateAPIView):
@@ -36,11 +36,12 @@ class UserCreateView(CreateAPIView):
         self.perform_create(serializer)
 
         new_user = User.objects.get(id=serializer.data['id'])
+        token = get_token(new_user)
 
-        return get_token(new_user)
+        return Response(token)
 
 
-class LoginView(APIView):
+class UserLoginView(APIView):
     permission_classes = (AllowAny,)
 
     @staticmethod
@@ -54,4 +55,6 @@ class LoginView(APIView):
             res = {'error': 'invalid username or password'}
             return Response(res)
 
-        return get_token(user)
+        token = get_token(user)
+
+        return Response(token)
