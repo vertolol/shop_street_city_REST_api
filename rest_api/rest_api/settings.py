@@ -20,13 +20,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'YOUR_SECRET_KEY'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get('DEBUG', default=0))
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1'
+]
 
 # Application definition
 DJANGO_APPS = [
@@ -83,12 +85,12 @@ WSGI_APPLICATION = 'rest_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'YOUR_db_NAME',
-        'USER': 'YOUR_USER',
-        'PASSWORD': 'YOUR_PASSWORD',
-        'HOST': '127.0.0.1',
-        'PORT': 5432,
+        'ENGINE': os.environ.get('POSTGRES_ENGINE', 'DEFAULT_ENGINE'),
+        'NAME': os.environ.get('POSTGRES_DATABASE'),
+        'USER': os.environ.get('POSTGRES_USER', 'DEFAULT_USER'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'DEFAULT_PASSWORD'),
+        'HOST': os.environ.get('POSTGRES_HOST', 'DEFAULT_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT', 'DEFAULT_PORT'),
     }
 }
 
@@ -130,11 +132,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',

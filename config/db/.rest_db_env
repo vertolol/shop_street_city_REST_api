@@ -1,0 +1,3 @@
+POSTGRES_DB=rest_db
+POSTGRES_USER=rest_user
+POSTGRES_PASSWORD=rest_password

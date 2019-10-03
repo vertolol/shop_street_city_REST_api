@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:10
+    env_file:
+      - ./config/db/.rest_db_env
+    volumes:
+      - database1_volume:/var/lib/postgresql/data
+    networks:
+      - db_network
+
+  rest:
+    build: .
+    env_file:
+      - ./config/django/.rest_django_env
+    volumes:
+      - ./rest_api:/rest_api
+      - static_volume:/rest_api/static
+    depends_on:
+      - db
+    networks:
+      - nginx_network
+      - db_network
+
+  nginx:
+    restart: always
+    image: nginx:latest
+    ports:
+      - "8000:80"
+    volumes:
+      - static_volume:/rest_api/static
+      - ./config/nginx/conf.d:/etc/nginx/conf.d
+    depends_on:
+      - rest
+      - db
+    networks:
+      - nginx_network
+
+volumes:
+  database1_volume:
+  static_volume:
+
+networks:
+  nginx_network:
+    driver: bridge
+  db_network:
+    driver: bridge

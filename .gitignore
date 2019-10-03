@@ -1,4 +1,4 @@
 # Project exclude paths
 .idea
-/venv/
+/venv
 my_settings.py
